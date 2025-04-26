@@ -1,0 +1,33 @@
+name: LustUpdate Auto Commit
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
+
+jobs:
+  update-lustupdate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git user
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Update LustUpdate file
+        run: |
+          date '+%Y-%m-%d %H:%M:%S' > LustUpdate
+
+      - name: Commit and push changes
+        run: |
+          git add LustUpdate
+          git commit -m "Update" || echo "No changes to commit"
+          git push
